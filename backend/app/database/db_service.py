@@ -16,3 +16,4 @@ def get_supabase():
     supabase: Client = create_client(url, key)
     return supabase
 
+
