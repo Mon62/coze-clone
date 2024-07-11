@@ -1,11 +1,12 @@
 <template>
-  <div>
-    <Sidebar />
+  <div class="d-inline-flex">
+    <component :is="this.$route.meta.layout || 'div'">
+    </component>
+    <router-view></router-view>
   </div>
 </template>
 
 <script setup>
-import Sidebar from './components/Sidebar.vue'
 </script>
 
 <style scoped></style>

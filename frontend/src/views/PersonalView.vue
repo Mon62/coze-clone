@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div style="font-size: 40px;">Person page</div>
 </template>
 
 <script setup></script>

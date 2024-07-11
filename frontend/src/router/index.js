@@ -1,20 +1,26 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { loadLayoutMiddleware } from './middleware'
 import HomeView from '../views/HomeView.vue'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {layout: DefaultLayout}
     },
     {
-      path: '/about',
+      path: '/space/:userId/bot',
       name: 'personal',
-      component: () => import('../views/PersonalView.vue')
+      component: () => import('../views/PersonalView.vue'),
+      meta: {layout: DefaultLayout}
     }
   ]
 })
+
+router.beforeEach(loadLayoutMiddleware);
 
 export default router
