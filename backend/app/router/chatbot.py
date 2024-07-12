@@ -6,7 +6,7 @@ from typing import Annotated, List
 from database.db_service import get_supabase
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from model.chatbot import Chatbot, LLM
-from utils.optimize_prompt import optimize_prompt
+from helper.optimize_prompt import optimize_prompt
 
 router = APIRouter(tags=["Chatbot"], prefix="/chatbot")
 
@@ -15,18 +15,19 @@ async def create_chatbot(
     chatbot: Chatbot, 
     supabase: Annotated[Client, Depends(get_supabase)]
 ):
-    try:
+    # try:
         data = jsonable_encoder(chatbot)
-        obj = supabase.table("chatbot").insert(data).execute()
-        chatbot_id = obj["data"][0]["id"]
+        obj = supabase.table("chatbot").insert(data).execute().data
+        chatbot_id = obj[0]["id"]
         llm = LLM(chatbot_id=chatbot_id)
         llm_data = jsonable_encoder(llm)
-        obj = supabase.table("llm").insert(llm_data).execute()
+        print (llm_data)
+        supabase.table("config_llm").insert(llm_data).execute()
 
         return {"detail": "suuccessfully created chatbot"}
     
-    except:
-        return BAD_REQUEST
+    # except:
+    #     return BAD_REQUEST
 
 @router.get("/get_all_chatbots")
 async def get_all_chatbots(

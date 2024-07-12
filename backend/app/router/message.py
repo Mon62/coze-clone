@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Security, Request, Form, File, UploadFile
+from fastapi import APIRouter, Depends, FastAPI
 from fastapi.encoders import jsonable_encoder
 from supabase import Client
 from utils.exceptions import BAD_REQUEST, FORBIDDEN, NOT_FOUND
@@ -9,13 +9,20 @@ from model.message import Message
 
 router = APIRouter(tags=["Message"], prefix="/message")
 
+# global variable to store message history
+app = FastAPI()
+app.message_history = []
+
 @router.get("/get_messages")
 async def get_messages(
-    chatbot_id: int,
+    chat_id: int,
+    k: int,
     supabase: Annotated[Client, Depends(get_supabase)]
 ):
     try:
-        messages = supabase.table("message").select("*").eq("chatbot_id", chatbot_id).order("timestamp", desc=True).execute().data
+        messages = supabase.table("message").select("*").eq("chat_id", chat_id).order("time", desc=False).execute().data
+        app.message_history = messages[-k:]
+        print(app.message_history)
         return messages
     except:
         return NOT_FOUND
@@ -49,9 +56,7 @@ async def create_message(
     supabase: Annotated[Client, Depends(get_supabase)]
 ):
     try:
-        data = jsonable_encoder(message)
-        obj = supabase.table("message").insert(data).execute()
+        print(app.message_history)
         return {"detail": "suuccessfully created message"}
     except:
         return BAD_REQUEST
-
