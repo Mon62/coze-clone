@@ -1,26 +1,40 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { loadLayoutMiddleware } from './middleware'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '../views/HomeView/HomeView.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import NoneSidebarLayout from '../layouts/NoneSidebarLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: '/', redirect: '/home' },
     {
       path: '/home',
       name: 'home',
       component: HomeView,
-      meta: {layout: DefaultLayout}
+      meta: { layout: DefaultLayout }
     },
     {
-      path: '/space/:userId/bot',
+      path: '/space/:spaceId',
       name: 'personal',
-      component: () => import('../views/PersonalView.vue'),
-      meta: {layout: DefaultLayout}
+      component: () => import('../views/PersonalView/PersonalView.vue'),
+      meta: { layout: DefaultLayout },
+      children: [
+        {
+          path: 'bot',
+          name: 'personal-bot',
+          component: () => import('@/views/PersonalView/PersonalBotView.vue')
+        },
+        {
+          path: 'knowledge',
+          name: 'personal-knowledge',
+          component: () => import('@/views/PersonalView/PersonalKnowledgeView.vue')
+        }
+      ]
     }
   ]
 })
 
-router.beforeEach(loadLayoutMiddleware);
+router.beforeEach(loadLayoutMiddleware)
 
 export default router

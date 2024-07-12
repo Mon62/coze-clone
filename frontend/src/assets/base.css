@@ -19,7 +19,7 @@
 
 /* semantic color variables for this project */
 :root {
-  --color-background-button-base: var(--vt-c-blue);
+  --color-background-base: var(--vt-c-blue);
   --color-background-sidebar: var(--coze-bg-1);
   --color-background-hover: var(--vt-c-gray-soft);
 

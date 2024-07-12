@@ -1,12 +1,7 @@
 <template>
-  <div class="d-inline-flex">
-    <component :is="this.$route.meta.layout || 'div'">
-    </component>
-    <router-view></router-view>
-  </div>
+  <component :is="this.$route.meta.layout || 'div'"> </component>
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <style scoped></style>

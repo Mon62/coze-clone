@@ -1,5 +1,7 @@
 <template>
-  <div style="font-size: 40px;">Person page</div>
+  <div class="d-flex">
+    <router-view />
+  </div>
 </template>
 
 <script setup></script>

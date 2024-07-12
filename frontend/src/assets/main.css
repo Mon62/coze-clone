@@ -1,5 +1,8 @@
 @import './base.css';
 
+.ant-tabs-nav-operations {
+  display: none !important; 
+}
 /* #app {
   max-width: 1280px;
   margin: 0 auto;
