@@ -60,7 +60,7 @@ async def update_chatbot(
         return {"detail": "suuccessfully updated chatbot"}
     except:
         return BAD_REQUEST
-    
+
 @router.patch("/update_llm")
 async def update_llm(
     llm: LLM,

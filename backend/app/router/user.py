@@ -64,17 +64,35 @@ async def update_user(
         supabase.table("user").update(data).execute()
         return {"detail": "successfully updated user"}
     except:
-        return BAD_REQUEST
+        return BAD_REQUEST 
 
-@router.post("/uploadfile/")
+@router.patch("/update_avatar")
 async def create_upload_file(
     file: UploadFile,
+    user_id: int,
     supabase: Annotated[Client, Depends(get_supabase)]
 ):  
-    
-    f = await file.read()
-    supabase.storage.from_("avatar").upload(
-        path=file.filename, file=f, file_options={"content-type": "image/jpeg"}
-    )
+    try:
+        user  = supabase.table("user").select("*").eq("id", user_id).execute().data[0]
+        if not user:
+            return NOT_FOUND
+            
+        f = await file.read()
 
-    return {"filename": file.filename}
+        if user["avatar"] == "https://i.sstatic.net/l60Hf.png":
+            supabase.storage.from_("avatar").upload(
+            path=f'avatar_{user_id}', file=f, file_options={"content-type": "image/jpeg"}
+            )
+        else:
+            supabase.storage.from_("avatar").update(
+            path=f'avatar_{user_id}', file=f, file_options={"content-type": "image/jpeg"}
+            )
+
+        url = supabase.storage.from_('avatar').create_signed_url(path=f'avatar_{user_id}', expires_in=30000000)
+            
+        supabase.table("user").update({"avatar": url}).eq("id", user_id).execute()
+
+        return {"detail": "successfully uploaded avatar"}
+    except:
+        return BAD_REQUEST
+
