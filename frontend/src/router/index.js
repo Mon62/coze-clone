@@ -23,6 +23,11 @@ const router = createRouter({
       path: '/space',
       name: 'Space',
       component: () => import('../views/SpaceView.vue')
+    },
+    {
+      path: '/space/upload',
+      name: 'Upload',
+      component: () => import('../views/UploadView.vue')
     }
   ]
 })

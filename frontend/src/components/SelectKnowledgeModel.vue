@@ -15,7 +15,7 @@
 
         <div class="create-knowledge">
           <button>
-            <span>Create knowledge</span>
+            <RouterLink to="/space/upload"><span style="color: white;">Create knowledge</span></RouterLink>
           </button>
         </div>
       </div>
@@ -30,7 +30,7 @@
               <div style="font-size: 13px; margin-top: 8px;">Please create first and then add</div>
               <div class="d-flex justify-content-center mt-4">
                 <button>
-                  <span>Create knowledge</span>
+                  <RouterLink to="/space/upload"><span style="color: white;">Create knowledge</span></RouterLink>
                 </button>
               </div>
             </div>
@@ -43,6 +43,7 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue';
+import { RouterLink } from 'vue-router';
 
 const isVisible = ref(false);
 const emit = defineEmits(['update:visible']);
