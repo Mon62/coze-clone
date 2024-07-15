@@ -2,9 +2,11 @@ from pydantic import BaseModel
 
 class Knowledge(BaseModel):
     description: str
-    user_id: int
     name: str
     embed_model: str
+
+class Knowledge_res(Knowledge):
+    id:int
 
 class File(BaseModel):
     knowledge_id: int

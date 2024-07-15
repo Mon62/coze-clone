@@ -1,13 +1,14 @@
 from fastapi.responses import RedirectResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from router import user, chatbot, message
+from router import user, chatbot, message, knowledge
 
 app = FastAPI()
 
 app.include_router(user.router)
 app.include_router(chatbot.router)
 app.include_router(message.router)
+app.include_router(knowledge.router)
 
 app.add_middleware(
     CORSMiddleware,
