@@ -19,11 +19,12 @@
           </button>
         </div>
       </div>
-      <div class="select-knowledge-content d-flex flex-column justify-content-center">
+
+      <div v-if="listKnowledge.length === 0" class="select-knowledge-content d-flex flex-column justify-content-center">
         <div class=" d-flex justify-content-center align-items-center">
           <div class="d-flex flex-column align-items-center">
             <div>
-              <!-- image -->
+              
             </div>
             <div>
               <h4 style="font-size: 16px; font-weight: 600;">No knowledge base found</h4>
@@ -37,6 +38,27 @@
           </div>
         </div>
       </div>
+
+      <!-- list knowledge -->
+      <div v-else>
+        <div class="d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-center py-3" style="border-bottom: 1px solid rgba(29, 28, 35, .08);">
+            <img style="width: 36px; height: 36px; border-radius: 8px;" src="../assets/dataset_text.png" alt="">
+            <div class="d-flex flex-column flex-grow-1 ms-4 gap-1">
+              <span style="font-size: 15px; font-weight: 500;">test</span>
+              <span>test.pdf</span>
+              <div class="d-flex gap-3">
+                <span class="px-2 rounded bg-body-secondary">5 MB</span>
+                <span class="px-2 rounded bg-body-secondary">1 Data</span>
+              </div>
+              <span style="color: darkgrey; font-size: 13px; font-weight: 300;">creation time 2024-07-11 12:24</span>
+            </div>
+            <div>
+              <button>Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </a-modal>
 </template>
@@ -44,6 +66,8 @@
 <script setup>
 import { ref, defineEmits } from 'vue';
 import { RouterLink } from 'vue-router';
+
+const listKnowledge = ref([])
 
 const isVisible = ref(false);
 const emit = defineEmits(['update:visible']);
@@ -65,26 +89,27 @@ defineExpose({
 
 <style lang="scss" scoped>
 button {
-      background-color: rgb(59, 106, 187);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 0 solid transparent;
-      border-radius: 8px;
-      outline: none;
-      padding-bottom: 6px;
-      padding-left: 16px;
-      padding-right: 16px;
-      padding-top: 6px;
+  background-color: rgb(59, 106, 187);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0 solid transparent;
+  border-radius: 8px;
+  outline: none;
+  padding-bottom: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 6px;
 
-      &:hover {
-        background-color: rgb(8, 50, 124);
-      }
-    }
+  &:hover {
+    background-color: rgb(8, 50, 124);
+  }
+}
 
 .select-knowledge {
   height: 100%;
+
   .select-knowledge-header {
     .type-knowledge {
       color: #1d1c2399;
@@ -103,9 +128,10 @@ button {
       vertical-align: middle;
     }
 
-    
+
   }
-  .select-knowledge-content{
+
+  .select-knowledge-content {
     height: calc(100% - 34px);
   }
 }
