@@ -1,6 +1,7 @@
-// import './assets/main.css'
+import './assets/main.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import "bootstrap-icons/font/bootstrap-icons.css";
+import 'ant-design-vue/dist/reset.css';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

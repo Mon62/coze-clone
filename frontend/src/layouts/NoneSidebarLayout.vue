@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div class="d-flex">
+    <router-view />
+  </div>
 </template>
 
 <script setup></script>
