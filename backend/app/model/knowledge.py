@@ -10,7 +10,7 @@ class Knowledge_res(Knowledge):
 
 class File(BaseModel):
     knowledge_id: int
-    url: str
+    name_in_storage: str
     name: str
 
 class Document(BaseModel):

@@ -39,7 +39,18 @@ async def get_detail(
     supabase: Annotated[Client, Depends(get_supabase)],
     knowledge_id:int
 ):
-    pass
+    res = supabase.table("knowledge").select("*").match({"user_id" : user_id,"id":knowledge_id}).execute().dict()["data"]
+    if res == []:
+        raise NOT_FOUND
+    
+    res = (
+            supabase.table("knowledge")
+            .select("*, file(*)")
+            .eq("id", knowledge_id)
+            .execute()
+            .dict()["data"][0]
+        )
+    return res
 
 @router.patch("/modify")
 async def modify_knowledge(
@@ -74,6 +85,8 @@ async def delete_knowledge(
     
     try:
         supabase.table("knowledge").delete().eq("id", knowledge_id).execute()
+        supabase.table("file").delete().eq("knowledge_id", knowledge_id).execute()
+        supabase.table("embedding").delete().eq("knowledge_id", knowledge_id).execute()
         return {"detail": "Knowledge deleted"}
     except:
         raise BAD_REQUEST

@@ -4,9 +4,9 @@ from supabase import Client
 from utils.exceptions import BAD_REQUEST, FORBIDDEN, NOT_FOUND, CONFLICT
 from typing import Annotated, List
 from database.db_service import get_supabase
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from model.user import User, UserLogin
-from utils.auth import get_id
+from fastapi.security import  OAuth2PasswordRequestForm
+from model.user import User, UserShow
+from utils.auth import get_id, oauth2_scheme, get_user_response
 from gotrue.errors import AuthApiError
 
 
@@ -60,25 +60,38 @@ async def login(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect email or password",
         )
-   
 
-#code này đang lỗi
-@router.patch("/info", description="Update user info")
-async def update_user_info(
+@router.get("/info")
+async def get_user_info(
+    token: Annotated[str, Depends(oauth2_scheme)],
     supabase: Annotated[Client, Depends(get_supabase)],
-    id: Annotated[str, Security(get_id)],
-    new_user_info: User
-
 ):
-    try:
-        response = supabase.rpc('update_user', {
-            'user_id': id,
-            'new_username': new_user_info.username,
-            'new_avatar_link': new_user_info.avatar
-        }).execute()     
-        return {"detail": "User info updated"}
-    except:
-        raise BAD_REQUEST
+    """
+    Get information of logged in user
+    """
+    user_response = get_user_response(token, supabase)
+    return UserShow(username=user_response.user.user_metadata["username"],mail=user_response.user.user_metadata["mail"],avatar=user_response.user.user_metadata["avatar"])
+
+
+
+# @router.patch("/change_info", description="Update user info")
+# async def update_user_info(
+#     supabase: Annotated[Client, Depends(get_supabase)],
+#     new_user_info: User,
+#     token: Annotated[str, Depends(oauth2_scheme)],
+    
+
+# ):
+#         session = supabase.auth.get_session()
+#         user_id = supabase.auth.get_user(token).user.id
+#         update_response = await supabase.auth.update_user({
+#             "username": new_user_info.username
+#         })
+#     # try:
+#         # await supabase.auth.update_user(token,{"username": new_user_info.username})
+#         # return {"detail": "User info updated"}
+#     # except:
+#     #     raise BAD_REQUEST
 
 
 
