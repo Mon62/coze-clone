@@ -46,6 +46,12 @@ const router = createRouter({
       path: '/space/upload',
       name: 'Upload',
       component: () => import('../views/UploadView.vue')
+    },
+    {
+      path: '/account',
+      name: 'Account',
+      component: () => import('../views/AccountView.vue'),
+      meta: { layout: DefaultLayout }
     }
   ]
 })

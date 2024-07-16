@@ -14,7 +14,8 @@
         <SidebarNavItem v-bind="navItem" :class="navItem.name" />
       </div>
     </div>
-    <div
+    <RouterLink to="/account" style="text-decoration: none; color: black;">
+      <div
       class="sidebar__profile d-flex align-items-center rounded-3 w-100 py-1 mt-2 gap-2"
       style="cursor: pointer"
     >
@@ -24,11 +25,13 @@
         <h6 class="fw-light">@Mon62</h6>
       </div>
     </div>
+    </RouterLink>
   </div>
 </template>
 
 <script setup>
 import SidebarNavItem from './SidebarNavItem.vue'
+import { RouterLink } from 'vue-router';
 
 const navItems = [
   {
