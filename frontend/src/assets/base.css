@@ -12,7 +12,8 @@
 
   --vt-c-indigo: #2c3e50;
 
-  --vt-c-blue: #4e40e5;
+  --vt-c-blue: rgb(78, 64, 229);
+  --vt-c-blue-mute: rgb(78, 64, 229, 0.8);
 
   --coze-bg-1: rgba(244, 244, 246, 1);
 }
@@ -20,6 +21,7 @@
 /* semantic color variables for this project */
 :root {
   --color-background-base: var(--vt-c-blue);
+  --color-background-base-hover: var(--vt-c-blue-mute);
   --color-background-sidebar: var(--coze-bg-1);
   --color-background-hover: var(--vt-c-gray-soft);
 

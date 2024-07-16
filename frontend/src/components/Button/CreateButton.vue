@@ -1,13 +1,12 @@
 <template>
   <div>
-    <button class="btn px-3 py-2 fw-medium">
-      {{ buttonLabel }}
-    </button>
+    <button class="btn px-3 py-2 fw-medium" @click="$emit('showModal')">{{buttonLabel}}</button>
   </div>
 </template>
 
 <script setup>
-const props = defineProps(['buttonLabel']);
+const props = defineProps(['buttonLabel'])
+const emits = defineEmits(['showModal'])
 </script>
 
 <style scoped>

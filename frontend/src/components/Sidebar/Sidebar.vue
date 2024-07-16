@@ -5,10 +5,14 @@
       <h2>coze</h2>
     </div>
     <div class="sidebar__navigate mt-4">
-      <button class="btn d-flex align-items-center justify-content-center gap-2 py-1 mb-3 w-100">
+      <button
+        class="btn d-flex align-items-center justify-content-center gap-2 py-1 mb-3 w-100"
+        @click="showModal"
+      >
         <i class="bi bi-plus-lg" style="color: white"></i>
         <h6 class="text-white">Create bot</h6>
       </button>
+      <create-bot-modal v-model:open="open" @closeModal="closeModal"></create-bot-modal>
 
       <div v-for="navItem in navItems" :key="navItem.id">
         <SidebarNavItem v-bind="navItem" :class="navItem.name" />
@@ -28,7 +32,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import SidebarNavItem from './SidebarNavItem.vue'
+import CreateBotModal from '../Modal/CreateBotModal.vue'
 
 const navItems = [
   {
@@ -60,6 +66,13 @@ const navItems = [
     navigate: '/home'
   }
 ]
+const open = ref(false)
+const showModal = () => {
+  open.value = true
+}
+const closeModal = () => {
+  open.value = false
+}
 </script>
 
 <style scoped>
