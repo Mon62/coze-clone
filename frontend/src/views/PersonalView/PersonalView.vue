@@ -6,7 +6,13 @@
           <i class="bi bi-person-circle h2"></i>
           <h5>Personal</h5>
         </div>
-        <button-create :buttonLabel="tabsData[activeKey - 1].buttonLabel"></button-create>
+        <div v-if="activeKey == 1">
+          <create-button buttonLabel="Create bot" @showModal="showModal"></create-button>
+          <create-bot-modal v-model:open="open" @closeModal="closeModal"></create-bot-modal>
+        </div>
+        <div v-else>
+          <create-button buttonLabel="Create knowledge base"></create-button>
+        </div>
       </div>
       <div class="header__bottom d-flex align-items-center justify-content-between mt-3">
         <div class="tabs">
@@ -37,7 +43,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
-import ButtonCreate from '@/components/Button/ButtonCreate.vue'
+import CreateButton from '@/components/Button/CreateButton.vue'
+import CreateBotModal from '@/components/Modal/CreateBotModal.vue';
 
 const tabsData = [
   {
@@ -83,6 +90,7 @@ const lastSegment = ref(path[path.length - 1])
 const spaceId = '62'
 const selectedValue = ref('All')
 const activeKey = ref('1')
+const open = ref(false)
 
 tabsData.forEach((tabData) => {
   if (tabData.path == lastSegment.value) {
@@ -90,6 +98,12 @@ tabsData.forEach((tabData) => {
   }
 })
 
+const showModal = () => {
+  open.value = true
+}
+const closeModal = () => {
+  open.value = false
+}
 const handleChangeActiveKey = (newActiveKey) => {
   activeKey.value = newActiveKey
   router.push(tabsData[newActiveKey - 1].navigate)
