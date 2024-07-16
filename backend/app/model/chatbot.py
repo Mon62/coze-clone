@@ -1,10 +1,12 @@
 from pydantic import BaseModel
 
-class Chatbot(BaseModel):
+class ChatbotBase(BaseModel):
     prompt: str
-    user_id: int
     knowledges: list[int]
     name: str
+
+class Chatbot(ChatbotBase):
+    user_id: str
 
 class LLM(BaseModel):
     temperature: float = 0.5
@@ -15,5 +17,5 @@ class LLM(BaseModel):
     max_length: int = 1024
     output_format: str = 'text'
     config_type: int = 1
-    llm_type: str = 'gemini-1.5'
+    model_name: str = 'gemini-1.5-pro'
     chatbot_id: int
