@@ -1,13 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, Security, Request, Form, File, UploadFile, status
+from fastapi import APIRouter, Depends, HTTPException,  status, UploadFile, Security
 from fastapi.encoders import jsonable_encoder
 from supabase import Client
 from utils.exceptions import BAD_REQUEST, FORBIDDEN, NOT_FOUND, CONFLICT
 from typing import Annotated, List
 from database.db_service import get_supabase
 from fastapi.security import  OAuth2PasswordRequestForm
-from model.user import User, UserShow
+from model.user import User, UserShow, UserUpdate
 from utils.auth import get_id, oauth2_scheme, get_user_response
 from gotrue.errors import AuthApiError
+
+
 
 
 router = APIRouter(tags=["User"])
@@ -74,54 +76,61 @@ async def get_user_info(
 
 
 
-# @router.patch("/change_info", description="Update user info")
-# async def update_user_info(
-#     supabase: Annotated[Client, Depends(get_supabase)],
-#     new_user_info: User,
-#     token: Annotated[str, Depends(oauth2_scheme)],
+@router.patch("/change_info", description="Update user info")
+async def update_user_info(
+    supabase: Annotated[Client, Depends(get_supabase)],
+    new_user_info: UserUpdate,
+    id: Annotated[str, Depends(get_id)],
     
 
-# ):
-#         session = supabase.auth.get_session()
-#         user_id = supabase.auth.get_user(token).user.id
-#         update_response = await supabase.auth.update_user({
-#             "username": new_user_info.username
-#         })
-#     # try:
-#         # await supabase.auth.update_user(token,{"username": new_user_info.username})
-#         # return {"detail": "User info updated"}
-#     # except:
-#     #     raise BAD_REQUEST
+):
+    try:
+        res = supabase.auth.admin.update_user_by_id(id,{ 'user_metadata': { 'mail': new_user_info.mail,'username':new_user_info.username } })
+        return {"detail": "successfully update"}
+    except:
+        raise BAD_REQUEST
+
+@router.patch("/change_password")
+async def change_password(
+    supabase: Annotated[Client, Depends(get_supabase)],
+    password:str,
+    id: Annotated[str, Depends(get_id)],
+):
+    try:
+        res = supabase.auth.admin.update_user_by_id(id,{ 'password': password })
+        return {"detail": "successfully update"}
+    except:
+        raise BAD_REQUEST
 
 
+@router.patch("/update_avatar")
+async def create_upload_file(
+    file: UploadFile,
+    supabase: Annotated[Client, Depends(get_supabase)],
+    token: str = Depends(oauth2_scheme)
+):  
+    if file.content_type != "image/jpeg":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only image file is accepted",
+        )
+    try:
+        user = supabase.auth.get_user(token).user
+        f = await file.read()
+        if user.user_metadata['avatar'] == "https://i.sstatic.net/l60Hf.png":
+            supabase.storage.from_("avatar").upload(
+            path=f'avatar_{user.id}', file=f, file_options={"content-type": "image/jpeg"}
+            )
+        else:
+            supabase.storage.from_("avatar").update(
+            path=f'avatar_{user.id}', file=f, file_options={"content-type": "image/jpeg"}
+            )
 
-# @router.patch("/update_avatar")
-# async def create_upload_file(
-#     file: UploadFile,
-#     user_id: int,
-#     supabase: Annotated[Client, Depends(get_supabase)]
-# ):  
-#     try:
-#         user  = supabase.table("user").select("*").eq("id", user_id).execute().data[0]
-#         if not user:
-#             return NOT_FOUND
-            
-#         f = await file.read()
+        url = supabase.storage.from_('avatar').create_signed_url(path=f'avatar_{user.id}', expires_in=30000000)["signedURL"]
 
-#         if user["avatar"] == "https://i.sstatic.net/l60Hf.png":
-#             supabase.storage.from_("avatar").upload(
-#             path=f'avatar_{user_id}', file=f, file_options={"content-type": "image/jpeg"}
-#             )
-#         else:
-#             supabase.storage.from_("avatar").update(
-#             path=f'avatar_{user_id}', file=f, file_options={"content-type": "image/jpeg"}
-#             )
+        res = supabase.auth.admin.update_user_by_id(user.id,{ 'user_metadata': { 'avatar': url } })
 
-#         url = supabase.storage.from_('avatar').create_signed_url(path=f'avatar_{user_id}', expires_in=30000000)
-            
-#         supabase.table("user").update({"avatar": url}).eq("id", user_id).execute()
-
-#         return {"detail": "successfully uploaded avatar"}
-#     except:
-#         return BAD_REQUEST
+        return {"detail": "successfully uploaded avatar"}
+    except:
+        return BAD_REQUEST
 

@@ -2,7 +2,7 @@ import os
 import openai
 from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import OnlinePDFLoader
 from dotenv import load_dotenv, find_dotenv
 from .exceptions import BAD_REQUEST
 
@@ -24,13 +24,13 @@ def insert_documents_with_file_id(docs, embeddings, supabase, table_name, file_i
         except:
             raise BAD_REQUEST
 
-def embedding_file(supabase,file_path,file_id,knowledge_id):
+def embedding_file_gpt(supabase,file_path,file_id,knowledge_id):
     _ = load_dotenv(find_dotenv())
 
 
     openai.api_key = os.environ['OPENAI_API_KEY']
 
-    loader = PyPDFLoader(file_path = file_path)
+    loader = OnlinePDFLoader(file_path = file_path)
     documents = loader.load()
 
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
@@ -39,6 +39,7 @@ def embedding_file(supabase,file_path,file_id,knowledge_id):
     embeddings = OpenAIEmbeddings()
     insert_documents_with_file_id(docs, embeddings, supabase, "documents", file_id,knowledge_id)
     return {"detail": "successfully embbedding"}
+
 
 
 def get_document(supabase,knowledge_id,query_text):
