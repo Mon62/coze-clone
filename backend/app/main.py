@@ -23,7 +23,4 @@ app.add_middleware(
 def read_root():
     return RedirectResponse(url="/docs")
 
-import uvicorn
 
-if __name__ == "__main__":
-    uvicorn.run(app, port=8080, host='0.0.0.0')
