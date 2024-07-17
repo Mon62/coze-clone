@@ -87,7 +87,7 @@ async def document(
     input:str
 ):  
 
-    res = await get_document(supabase,knowledge_id,input)
+    res = get_document(supabase,knowledge_id,input)
     return res
 
 

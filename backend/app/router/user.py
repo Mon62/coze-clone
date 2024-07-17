@@ -74,6 +74,16 @@ async def get_user_info(
     user_response = get_user_response(token, supabase)
     return UserShow(username=user_response.user.user_metadata["username"],mail=user_response.user.user_metadata["mail"],avatar=user_response.user.user_metadata["avatar"])
 
+@router.delete("/delete", description="Delete user")
+async def update_user_info(
+    supabase: Annotated[Client, Depends(get_supabase)],
+    id: Annotated[str, Depends(get_id)],
+):
+    try:
+        res = supabase.auth.admin.deleteUser(id)
+        return {"detail": "successfully delete"}
+    except:
+        raise BAD_REQUEST
 
 
 @router.patch("/change_info", description="Update user info")

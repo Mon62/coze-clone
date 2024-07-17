@@ -46,7 +46,7 @@ def get_document(supabase,knowledge_id,query_text):
     embeddings = OpenAIEmbeddings()
     query_embedding = embeddings.embed_query(query_text)
     try:
-        response = supabase.rpc('match_documents', {
+        response = supabase.rpc('match_documents_7', {
             'query_embedding': query_embedding,
             'input_knowledge_id': knowledge_id
         }).execute()
